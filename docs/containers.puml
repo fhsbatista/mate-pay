@@ -1,0 +1,43 @@
+@startuml
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+AddRelTag("async", $lineStyle = DashedLine())
+
+title "Digital Wallet MatePay"
+
+Person(client, "Client", "Digital Wallet User")
+
+System_Ext(payment_gateway, "Payment Gateway", "Payment Processor")
+
+System_Boundary(digital_wallet, "Digital Wallet") {
+    Container(spa, "SPA", "Digital Wallet Web App")
+    Container(wallet_core, "Wallet Core", "Java", "Wallet Core is responsible for the transactions")
+    Container(balance_service, "Balance Microservice", "Java", "Returns customer's balance")
+    Container(statements_service, "Statements Microservice", "Java", "Returns customer's statements")
+    Container(payment_acl, "Payment ACL", "Java", "Anti-corruption layer for payment gateway")
+
+    ContainerDb(wallet_core_db, "Wallet DB", "MySQL")
+    Rel(wallet_core, wallet_core_db, "Uses", "MySQL Driver")
+
+    ContainerDb(balance_db, "Balance DB", "MySQL")
+    Rel(balance_service, balance_db, "Uses", "MySQL Driver")
+
+    ContainerDb(statements_db, "Statements DB", "MySQL")
+    Rel(statements_service, statements_db, "Uses", "MySQL Driver")
+
+    ContainerDb(payment_acl_db, "Payments ACL DB", "MySQL")
+    Rel(payment_acl, payment_acl_db, "Uses", "MySQL Driver")
+
+    Rel(client, spa, "Uses", "HTTPS")
+    Rel(spa, wallet_core, "Uses", "JSON/HTTPS")
+    Rel(spa, balance_service, "Uses", "JSON/HTTPS")
+    Rel(spa, statements_service, "Uses", "JSON/HTTPS")
+
+
+    Rel(wallet_core, payment_acl, "Uses", "JSON/HTTPS")
+    Rel(payment_acl, payment_gateway, "Uses", "JSON/HTTPS")
+
+    Rel(wallet_core, balance_service, "Uses", "Topic", $tags = "async")
+    Rel(wallet_core, statements_service, "Uses", "Topic", $tags = "async")
+}
+
+@enduml
