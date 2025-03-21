@@ -1,6 +1,9 @@
 package com.matepay.wallet_core.entities;
 
 import com.matepay.wallet_core.Exceptions;
+import com.matepay.wallet_core.domain.entities.Account;
+import com.matepay.wallet_core.domain.entities.Client;
+import com.matepay.wallet_core.domain.entities.Transaction;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

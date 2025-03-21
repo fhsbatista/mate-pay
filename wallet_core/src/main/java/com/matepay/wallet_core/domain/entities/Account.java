@@ -1,4 +1,4 @@
-package com.matepay.wallet_core.entities;
+package com.matepay.wallet_core.domain.entities;
 
 import lombok.Getter;
 
