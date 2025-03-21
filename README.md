@@ -41,7 +41,8 @@ The project is organized into modules representing the following components:
 
 Below is the checklist of development steps based on the components in the C4 model:
 
-- [ ] **Wallet Core:** Implement transaction processing.
+- [ ] **Wallet Core:** Implement transaction processing. **In progress...**
+
 - [ ] **Wallet DB:** Create and configure the database for Wallet Core.
 - [ ] **SPA (Digital Wallet Web App):** Develop the responsive web application.
 - [ ] **Balance Microservice:** Develop the service for retrieving balances.
