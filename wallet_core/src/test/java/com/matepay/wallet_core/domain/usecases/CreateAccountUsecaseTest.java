@@ -52,7 +52,7 @@ class CreateAccountUsecaseTest {
         when(clientRepository.get(client.getUuid())).thenThrow(new Exceptions.ClientNotFound());
     }
 
-    void mockSuccessSaveAccount(Account account) {
+    void mockSuccessSaveAccount(Account account) throws Exceptions {
         when(accountRepository.save(any())).thenReturn(account);
     }
 
@@ -95,7 +95,7 @@ class CreateAccountUsecaseTest {
     }
 
     @Test
-    void shouldReturnCorrectAccountOnRepositorySuccess() throws Exceptions.ClientNotFound {
+    void shouldReturnCorrectAccountOnRepositorySuccess() throws Exceptions {
         final var usecase = makeSut();
         final var client = makeClient();
         final var input = makeInput(client.getUuid());

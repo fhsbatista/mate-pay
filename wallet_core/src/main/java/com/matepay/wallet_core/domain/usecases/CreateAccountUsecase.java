@@ -6,9 +6,11 @@ import com.matepay.wallet_core.domain.entities.Client;
 import com.matepay.wallet_core.domain.repositories.AccountRepository;
 import com.matepay.wallet_core.domain.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class CreateAccountUsecase {
     public record Input(UUID clientId) {
     }
@@ -27,7 +29,7 @@ public class CreateAccountUsecase {
         this.clientRepository = clientRepository;
     }
 
-    public Account execute(Input input) throws Exceptions.ClientNotFound {
+    public Account execute(Input input) throws Exceptions {
         final Client client = clientRepository.get(input.clientId);
         final Account account = new Account(client);
         return accountRepository.save(account);

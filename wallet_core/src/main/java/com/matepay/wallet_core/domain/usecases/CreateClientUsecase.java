@@ -3,7 +3,9 @@ package com.matepay.wallet_core.domain.usecases;
 import com.matepay.wallet_core.domain.entities.Client;
 import com.matepay.wallet_core.domain.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CreateClientUsecase {
     public record Input(String name, String email) {
     }

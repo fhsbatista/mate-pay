@@ -1,5 +1,6 @@
 package com.matepay.wallet_core.domain.entities;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -7,7 +8,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-public class Account{
+@EqualsAndHashCode
+public class Account {
     private final UUID uuid;
     private final Client client;
     private BigDecimal balance;
@@ -22,6 +24,20 @@ public class Account{
         this.balance = BigDecimal.ZERO;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
+    }
+
+    public Account(
+            UUID uuid,
+            Client client,
+            BigDecimal balance,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        this.uuid = uuid;
+        this.client = client;
+        this.balance = balance;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public void credit(BigDecimal amount) {

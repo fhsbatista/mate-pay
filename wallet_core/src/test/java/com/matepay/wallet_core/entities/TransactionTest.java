@@ -57,20 +57,6 @@ class TransactionTest {
                     () -> new Transaction(accountFrom, null, BigDecimal.valueOf(0.0))
             );
         }
-
-        @Test
-        void shouldThrowIfAccountFromHasNotEnoughBalance() {
-            final Client clientFrom = new Client("John Doe", "john.doe@johns.com");
-            final Account accountFrom = new Account(clientFrom);
-            accountFrom.credit(BigDecimal.valueOf(100));
-            final Client clientTo = new Client("Mark Doe", "mark.doe@johns.com");
-            final Account accountTo = new Account(clientTo);
-
-            assertThrows(
-                    Exceptions.NotEnoughBalance.class,
-                    () -> new Transaction(accountFrom, accountTo, BigDecimal.valueOf(101.0))
-            );
-        }
     }
 
     @Nested

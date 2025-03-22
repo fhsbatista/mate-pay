@@ -6,6 +6,6 @@ import com.matepay.wallet_core.domain.entities.Account;
 import java.util.UUID;
 
 public interface AccountRepository {
-    Account get(UUID uuid) throws Exceptions.AccountNotFound;
-    Account save(Account account);
+    Account get(UUID uuid) throws Exceptions;
+    Account save(Account account) throws Exceptions;
 }

@@ -48,15 +48,15 @@ class CreateTransactionUsecaseTest {
         return new Transaction(from, to, amount);
     }
 
-    void mockSuccessGetAccount(Account account) throws Exceptions.AccountNotFound {
+    void mockSuccessGetAccount(Account account) throws Exceptions {
         when(accountRepository.get(account.getUuid())).thenReturn(account);
     }
 
-    void mockFailureGetAccount(Account account) throws Exceptions.AccountNotFound {
+    void mockFailureGetAccount(Account account) throws Exceptions {
         when(accountRepository.get(account.getUuid())).thenThrow(new Exceptions.AccountNotFound());
     }
 
-    void mockSuccessSaveTransaction(Transaction transaction) {
+    void mockSuccessSaveTransaction(Transaction transaction) throws Exceptions {
         when(transactionRepository.save(any())).thenReturn(transaction);
     }
 
@@ -101,6 +101,20 @@ class CreateTransactionUsecaseTest {
         mockFailureGetAccount(accountTo);
 
         assertThrows(Exceptions.AccountNotFound.class, () -> usecase.execute(input));
+    }
+
+    @Test
+    void shouldThrowIfAccountFromHasNotEnoughBalance() throws Exceptions {
+        final var usecase = makeSut();
+        final var accountFrom = makeAccount(makeClient());
+        final var accountTo = makeAccount(makeClient());
+        final var amount = BigDecimal.valueOf(200.0);
+        final var input = makeInput(accountFrom, accountTo, amount);
+        accountFrom.credit(BigDecimal.valueOf(100));
+        mockSuccessGetAccount(accountFrom);
+        mockSuccessGetAccount(accountTo);
+
+        assertThrows(Exceptions.NotEnoughBalance.class, () -> usecase.execute(input));
     }
 
     @Test
