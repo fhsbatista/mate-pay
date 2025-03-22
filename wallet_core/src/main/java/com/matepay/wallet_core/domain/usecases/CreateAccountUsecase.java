@@ -13,9 +13,6 @@ public class CreateAccountUsecase {
     public record Input(UUID clientId) {
     }
 
-    public record Output(Account account) {
-    }
-
     @Autowired
     private AccountRepository accountRepository;
 
@@ -30,11 +27,9 @@ public class CreateAccountUsecase {
         this.clientRepository = clientRepository;
     }
 
-    public Output execute(Input input) throws Exceptions.ClientNotFound {
+    public Account execute(Input input) throws Exceptions.ClientNotFound {
         final Client client = clientRepository.get(input.clientId);
         final Account account = new Account(client);
-        final Account persisted = accountRepository.save(account);
-
-        return new Output(persisted);
+        return accountRepository.save(account);
     }
 }

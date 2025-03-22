@@ -19,6 +19,4 @@ public class CreateClientUsecase {
         final Client client = clientRepository.save(new Client(input.name(), input.email()));
         return client;
     }
-
-
 }

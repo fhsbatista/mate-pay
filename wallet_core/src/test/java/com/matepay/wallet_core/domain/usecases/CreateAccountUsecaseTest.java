@@ -103,10 +103,8 @@ class CreateAccountUsecaseTest {
         mockSuccessGetClient(client);
         mockSuccessSaveAccount(account);
 
-        final CreateAccountUsecase.Output result = usecase.execute(input);
+        final Account result = usecase.execute(input);
 
-        assertEquals(account, result.account());
+        assertEquals(account, result);
     }
-
-
 }
