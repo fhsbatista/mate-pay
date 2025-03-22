@@ -6,4 +6,5 @@ public class Exceptions extends Exception {
     public static class AccountFromMustBePresent extends Exceptions {}
     public static class AccountToMustBePresent extends Exceptions {}
     public static class NotEnoughBalance extends Exceptions {}
+    public static class ClientNotFound extends Exceptions {}
 }
