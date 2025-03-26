@@ -10,21 +10,22 @@ import java.util.HashMap;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class EventDispatcherImplTest {
     EventDispatcherImpl sut;
-    EventHandlerImpl handler1;
-    EventHandlerImpl handler2;
-    EventImpl event1;
-    EventImpl event2;
+    EventHandler handler1;
+    EventHandler handler2;
+    Event event1;
+    Event event2;
 
     @BeforeEach
     void setup() {
         sut = new EventDispatcherImpl();
         handler1 = new EventHandlerImpl();
         handler2 = new EventHandlerImpl();
-        event1 = new EventImpl();
-        event2 = new EventImpl();
+        event1 = new EventImpl("USER_REGISTERED");
+        event2 = new EventImpl("ACCOUNT_REGISTERED");
     }
 
     @Nested
@@ -32,21 +33,19 @@ class EventDispatcherImplTest {
     class RegisterTests {
         @Test
         void shouldThrowWhenEventHandlerIsAlreadyRegistered() throws Exceptions {
-            String eventName = "USER_REGISTERED";
-            sut.register(eventName, handler1);
+            sut.register(event1.getName(), handler1);
 
             assertThrows(
                     Exceptions.EventHandlerAlreadyRegistered.class,
-                    () -> sut.register(eventName, handler1)
+                    () -> sut.register(event1.getName(), handler1)
             );
         }
 
         @Test
         void shouldRegisterHandlerCorrectly() throws Exceptions {
-            String eventName = "USER_REGISTERED";
-            sut.register(eventName, handler1);
+            sut.register(event1.getName(), handler1);
 
-            assertTrue(sut.has(eventName, handler1));
+            assertTrue(sut.has(event1.getName(), handler1));
         }
     }
 
@@ -55,25 +54,21 @@ class EventDispatcherImplTest {
     class HasTests {
         @Test
         void shouldReturnTrueWhenEventAndHandlerAreRegistered() throws Exceptions {
-            String eventName = "USER_REGISTERED";
-            sut.register(eventName, handler1);
+            sut.register(event1.getName(), handler1);
 
-            assertTrue(sut.has(eventName, handler1));
+            assertTrue(sut.has(event1.getName(), handler1));
         }
 
         @Test
         void shouldReturnFalseWhenEventIsNotRegistered() {
-            String eventName = "USER_REGISTERED";
-
-            assertFalse(sut.has(eventName, handler1));
+            assertFalse(sut.has(event1.getName(), handler1));
         }
 
         @Test
         void shouldReturnFalseWhenEventExistsButHandlerIsNotRegistered() throws Exceptions {
-            String eventName = "USER_REGISTERED";
-            sut.register(eventName, handler1);
+            sut.register(event1.getName(), handler1);
 
-            assertFalse(sut.has(eventName, handler2));
+            assertFalse(sut.has(event1.getName(), handler2));
         }
     }
 
@@ -94,4 +89,17 @@ class EventDispatcherImplTest {
         }
     }
 
+    @Nested
+    @DisplayName("Dispatch")
+    class DispatchTests {
+        @Test
+        void shouldCallHandlersToHandle() throws Exceptions {
+            handler1 = mock(EventHandler.class);
+            sut.register(event1.getName(), handler1);
+
+            sut.dispatch(event1);
+
+            verify(handler1, times(1)).handle(event1);
+        }
+    }
 }

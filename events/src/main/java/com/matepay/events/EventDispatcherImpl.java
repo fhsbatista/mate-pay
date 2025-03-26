@@ -21,7 +21,9 @@ public class EventDispatcherImpl implements EventDispatcher {
 
     @Override
     public void dispatch(Event event) {
+        if (!handlers.containsKey(event.getName())) return;
 
+        handlers.get(event.getName()).forEach(h -> h.handle(event));
     }
 
     @Override
