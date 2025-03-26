@@ -73,6 +73,12 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.matepay</groupId>
+            <artifactId>events</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
