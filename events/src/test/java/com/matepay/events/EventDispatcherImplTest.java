@@ -5,6 +5,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class EventDispatcherImplTest {
@@ -70,6 +74,23 @@ class EventDispatcherImplTest {
             sut.register(eventName, handler1);
 
             assertFalse(sut.has(eventName, handler2));
+        }
+    }
+
+    @Nested
+    @DisplayName("Clear")
+    class ClearTests {
+        @Test
+        void shouldClearAllRegisteredHandlers() throws Exceptions, NoSuchFieldException, IllegalAccessException {
+            Field handlersField = EventDispatcherImpl.class.getDeclaredField("handlers");
+            handlersField.setAccessible(true);
+            sut.register("USER_REGISTERED", handler1);
+            sut.register("ACCOUNT_REGISTERED", handler1);
+
+            sut.clear();
+
+            final var handlers = (HashMap<String, Set<EventHandlerImpl>>) handlersField.get(sut);
+            assertEquals(0, handlers.size());
         }
     }
 

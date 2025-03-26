@@ -38,6 +38,6 @@ public class EventDispatcherImpl implements EventDispatcher {
 
     @Override
     public void clear() {
-
+        handlers.clear();
     }
 }
