@@ -23,6 +23,8 @@ public class EventDispatcherImpl implements EventDispatcher {
     public void dispatch(Event event) {
         if (!handlers.containsKey(event.getName())) return;
 
+        //This implementation is likely to lead to concurrency problems
+        //Improve later.
         handlers.get(event.getName()).forEach(h -> h.handle(event));
     }
 
@@ -34,8 +36,15 @@ public class EventDispatcherImpl implements EventDispatcher {
     }
 
     @Override
-    public void remove(String eventName, EventHandler handler) {
+    public void remove(String eventName, EventHandler handler) throws Exceptions {
+        if (!handlers.containsKey(eventName)) throw new Exceptions.EventNameNotRegistered();
 
+        final var registeredHandlers = handlers.get(eventName);
+        if (!registeredHandlers.contains(handler)) throw new Exceptions.EventHandlerNotRegistered();
+
+        registeredHandlers.remove(handler);
+
+        if (handlers.get(eventName).isEmpty()) handlers.remove(eventName);
     }
 
     @Override

@@ -102,4 +102,43 @@ class EventDispatcherImplTest {
             verify(handler1, times(1)).handle(event1);
         }
     }
+
+    @Nested
+    @DisplayName("Remove")
+    class RemoveTests {
+        @Test
+        void shouldRemoveHandlersCorrectly() throws Exceptions, NoSuchFieldException, IllegalAccessException {
+            Field handlersField = EventDispatcherImpl.class.getDeclaredField("handlers");
+            handlersField.setAccessible(true);
+            handler1 = mock(EventHandler.class);
+            sut.register(event1.getName(), handler1);
+
+            sut.remove(event1.getName(), handler1);
+
+            final var handlers = (HashMap<String, Set<EventHandlerImpl>>) handlersField.get(sut);
+            assertEquals(0, handlers.size());
+        }
+
+        @Test
+        void shouldThrowIfHandlerIsNotRegistered() throws Exceptions {
+            handler1 = mock(EventHandler.class);
+            sut.register(event1.getName(), handler1);
+
+            assertThrows(
+                    Exceptions.EventHandlerNotRegistered.class,
+                    () -> sut.remove(event1.getName(), handler2)
+            );
+        }
+
+        @Test
+        void shouldThrowIfEventNameIsNotRegistered() throws Exceptions{
+            handler1 = mock(EventHandler.class);
+            sut.register("REGISTERED_NAME", handler1);
+
+            assertThrows(
+                    Exceptions.EventNameNotRegistered.class,
+                    () -> sut.remove("NOT_REGISTERED_NAME", handler1)
+            );
+        }
+    }
 }
