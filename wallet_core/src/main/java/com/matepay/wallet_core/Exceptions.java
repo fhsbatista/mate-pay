@@ -8,5 +8,10 @@ public class Exceptions extends Exception {
     public static class NotEnoughBalance extends Exceptions {}
     public static class ClientNotFound extends Exceptions {}
     public static class AccountNotFound extends Exceptions {}
-    public static class TransactiontNotFound extends Exceptions {}
+    public static class TransactionNotFound extends Exceptions {}
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

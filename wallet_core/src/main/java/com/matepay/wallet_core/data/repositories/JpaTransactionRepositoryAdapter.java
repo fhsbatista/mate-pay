@@ -17,9 +17,9 @@ public class JpaTransactionRepositoryAdapter implements TransactionRepository {
         this.jpa = jpa;
     }
     @Override
-    public Transaction get(UUID uuid) throws Exceptions.TransactiontNotFound {
+    public Transaction get(UUID uuid) throws Exceptions.TransactionNotFound {
         final var transaction = jpa.findById(uuid);
-        if (transaction.isEmpty()) throw new Exceptions.TransactiontNotFound();
+        if (transaction.isEmpty()) throw new Exceptions.TransactionNotFound();
 
         return null;
     }

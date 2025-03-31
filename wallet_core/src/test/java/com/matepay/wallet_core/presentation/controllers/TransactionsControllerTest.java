@@ -102,7 +102,7 @@ class TransactionsControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(json))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$[*].field").value(hasItem("accountFromTo")))
+                    .andExpect(jsonPath("$[*].field").value(hasItem("accountToId")))
                     .andExpect(jsonPath("$[*].message").value(hasItem("must not be blank")));
         }
 
@@ -139,7 +139,7 @@ class TransactionsControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(json))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$[*].field").value(hasItem("accountFromTo")))
+                    .andExpect(jsonPath("$[*].field").value(hasItem("accountToId")))
                     .andExpect(jsonPath("$[*].message").value(hasItem("invalid UUID")));
         }
 
@@ -183,5 +183,6 @@ class TransactionsControllerTest {
                     .andExpect(jsonPath("$.to.uuid").value(transaction.getTo().getUuid().toString()))
                     .andExpect(jsonPath("$.amount").value(transaction.getAmount().toString()));
         }
+
     }
 }

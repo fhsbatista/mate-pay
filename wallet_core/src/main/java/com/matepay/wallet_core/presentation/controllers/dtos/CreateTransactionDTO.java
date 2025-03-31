@@ -13,7 +13,7 @@ public record CreateTransactionDTO(
 
         @NotBlank
         @ValidUUID
-        String accountFromTo,
+        String accountToId,
 
         @NotNull
         BigDecimal amount
