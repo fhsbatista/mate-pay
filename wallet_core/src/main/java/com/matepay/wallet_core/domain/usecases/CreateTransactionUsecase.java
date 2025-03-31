@@ -8,6 +8,7 @@ import com.matepay.wallet_core.domain.repositories.ClientRepository;
 import com.matepay.wallet_core.domain.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -35,14 +36,21 @@ public class CreateTransactionUsecase {
         this.transactionRepository = transactionRepository;
     }
 
+    @Transactional(rollbackFor = Exceptions.class)
     public Transaction execute(Input input) throws Exceptions {
         final Account from = accountRepository.get(input.accountFromId);
         final Account to = accountRepository.get(input.accountToId);
         if (!hasBalance(from, input.amount)) throw new Exceptions.NotEnoughBalance();
 
         final Transaction transaction = new Transaction(from, to, input.amount);
+        from.debit(input.amount);
+        to.credit(input.amount);
 
-        return transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
+        accountRepository.updateBalance(from);
+        accountRepository.updateBalance(to);
+
+        return transaction;
     }
 
     private boolean hasBalance(Account from, BigDecimal amount) {

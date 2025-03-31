@@ -118,10 +118,10 @@ class CreateTransactionUsecaseTest {
     }
 
     @Test
-    void shouldCallTransactionRepository() throws Exceptions {
+    void shouldCallTransactionRepositoryAndAccountRepositoryToAdjustBalances() throws Exceptions {
         final var usecase = makeSut();
-        final var accountFrom = makeAccount(makeClient());
-        final var accountTo = makeAccount(makeClient());
+        final var accountFrom = spy(makeAccount(makeClient()));
+        final var accountTo = spy(makeAccount(makeClient()));
         final var amount = BigDecimal.valueOf(200.0);
         final var input = makeInput(accountFrom, accountTo, amount);
         accountFrom.credit(BigDecimal.valueOf(300.0));
@@ -131,6 +131,10 @@ class CreateTransactionUsecaseTest {
         usecase.execute(input);
 
         verify(transactionRepository, times(1)).save(any());
+        verify(accountFrom, times(1)).debit(input.amount());
+        verify(accountTo, times(1)).credit(input.amount());
+        verify(accountRepository, times(1)).updateBalance(accountFrom);
+        verify(accountRepository, times(1)).updateBalance(accountTo);
     }
 
     @Test
