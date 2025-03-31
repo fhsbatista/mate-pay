@@ -16,7 +16,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class TransactionDb {
     @Id
-    private UUID uuid;
+    private UUID id;
     private BigDecimal amount;
     private Instant createdAt;
 
@@ -32,13 +32,13 @@ public class TransactionDb {
     }
 
     public TransactionDb(
-            UUID uuid,
+            UUID id,
             AccountDb from,
             AccountDb to,
             BigDecimal amount,
             Instant createdAt
     ) {
-        this.uuid = uuid;
+        this.id = id;
         this.from = from;
         this.to = to;
         this.amount = amount;
@@ -56,6 +56,6 @@ public class TransactionDb {
     }
 
     public Transaction toDomain() throws Exceptions {
-        return new Transaction(uuid, from.toDomain(), to.toDomain(), amount, createdAt);
+        return new Transaction(id, from.toDomain(), to.toDomain(), amount, createdAt);
     }
 }
