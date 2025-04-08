@@ -42,15 +42,13 @@ public class CreateTransactionUsecase {
         final Account to = accountRepository.get(input.accountToId);
         if (!hasBalance(from, input.amount)) throw new Exceptions.NotEnoughBalance();
 
-        final Transaction transaction = new Transaction(from, to, input.amount);
         from.debit(input.amount);
         to.credit(input.amount);
 
-        transactionRepository.save(transaction);
         accountRepository.updateBalance(from);
         accountRepository.updateBalance(to);
 
-        return transaction;
+        return transactionRepository.save(new Transaction(from, to, input.amount));
     }
 
     private boolean hasBalance(Account from, BigDecimal amount) {
