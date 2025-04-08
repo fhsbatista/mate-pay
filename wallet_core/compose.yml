@@ -10,5 +10,14 @@ services:
     volumes:
       - mysql_db:/var/lib/mysql
 
+  server:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
 volumes:
   mysql_db:
