@@ -21,11 +21,12 @@ Each component has its own dedicated database:
 - **Statements DB** for Statements Microservice.
 - **Payments ACL DB** for Payment ACL.
 
-## Technologies Used
+## Technologies and tools
 
-- **Java:** The primary programming language for developing the microservices.
-- **MySQL:** A relational database used to store transaction data, balances, and statements.
-- **PlantUML:** A tool used for creating architectural diagrams.
+- **Java:** Main programming language used.
+- **MySQL:** To build the database of each microsservice.
+- **Kafka** For communication among microsservice using event messages.
+- **PlantUML:** For documentation.
 
 ## Project Structure
 
