@@ -6,6 +6,8 @@ import com.matepay.wallet_core.domain.entities.Transaction;
 import com.matepay.wallet_core.domain.repositories.AccountRepository;
 import com.matepay.wallet_core.domain.repositories.ClientRepository;
 import com.matepay.wallet_core.domain.repositories.TransactionRepository;
+import com.matepay.wallet_core.infra.kafka.KafkaProducer;
+import com.matepay.wallet_core.messaging.events.TransactionCreated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +30,17 @@ public class CreateTransactionUsecase {
     @Autowired
     private final TransactionRepository transactionRepository;
 
+    @Autowired
+    private final KafkaProducer kafkaProducer;
+
     public CreateTransactionUsecase(
             AccountRepository accountRepository,
-            TransactionRepository transactionRepository
+            TransactionRepository transactionRepository,
+            KafkaProducer kafkaProducer
     ) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Transactional(rollbackFor = Exceptions.class)
@@ -48,7 +55,12 @@ public class CreateTransactionUsecase {
         accountRepository.updateBalance(from);
         accountRepository.updateBalance(to);
 
-        return transactionRepository.save(new Transaction(from, to, input.amount));
+        final Transaction persistedTransaction = transactionRepository.save(new Transaction(from, to, input.amount));
+        final TransactionCreated event = new TransactionCreated(persistedTransaction);
+
+        kafkaProducer.publish("transactions", event);
+
+        return persistedTransaction;
     }
 
     private boolean hasBalance(Account from, BigDecimal amount) {
