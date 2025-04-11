@@ -35,7 +35,7 @@ class TransactionDbTest {
 
             final var result = transactionDb.toDomain();
 
-            assertEquals(transactionDb.getUuid(), result.getUuid());
+            assertEquals(transactionDb.getId(), result.getUuid());
             assertEquals(transactionDb.getFrom().toDomain(), result.getFrom());
             assertEquals(transactionDb.getTo().toDomain(), result.getTo());
             assertEquals(transactionDb.getAmount(), result.getAmount());
@@ -57,7 +57,7 @@ class TransactionDbTest {
 
             final var result = TransactionDb.fromDomain(transaction);
 
-            assertEquals(transaction.getUuid(), result.getUuid());
+            assertEquals(transaction.getUuid(), result.getId());
             assertEquals(transaction.getFrom(), result.getFrom().toDomain());
             assertEquals(transaction.getTo(), result.getTo().toDomain());
             assertEquals(transaction.getAmount(), result.getAmount());

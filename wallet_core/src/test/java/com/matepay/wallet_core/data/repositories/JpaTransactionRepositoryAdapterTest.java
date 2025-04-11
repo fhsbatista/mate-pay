@@ -43,7 +43,7 @@ class JpaTransactionRepositoryAdapterTest {
             final var uuid = UUID.randomUUID();
             when(jpaTransactionRepository.findById(uuid)).thenReturn(Optional.empty());
 
-            assertThrows(Exceptions.TransactiontNotFound.class, () -> sut.get(uuid));
+            assertThrows(Exceptions.TransactionNotFound.class, () -> sut.get(uuid));
         }
     }
 

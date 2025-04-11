@@ -6,6 +6,7 @@ import com.matepay.wallet_core.domain.entities.Client;
 import com.matepay.wallet_core.domain.entities.Transaction;
 import com.matepay.wallet_core.domain.repositories.AccountRepository;
 import com.matepay.wallet_core.domain.repositories.TransactionRepository;
+import com.matepay.wallet_core.infra.kafka.KafkaProducer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -20,16 +21,30 @@ import static org.mockito.Mockito.*;
 class CreateTransactionUsecaseTest {
     @Mock
     private AccountRepository accountRepository;
+
     @Mock
     private TransactionRepository transactionRepository;
+
+    @Mock
+    private KafkaProducer kafkaProducer;
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
-    CreateTransactionUsecase makeSut() {
-        return new CreateTransactionUsecase(accountRepository, transactionRepository);
+    CreateTransactionUsecase makeSut() throws Exceptions {
+        final var accountFrom = makeAccount(makeClient());
+        final var accountTo = makeAccount(makeClient());
+        final var amount = BigDecimal.valueOf(200.0);
+        final var transaction = makeTransaction(accountFrom, accountTo, amount);
+        mockSuccessSaveTransaction(transaction);
+
+        return new CreateTransactionUsecase(
+                accountRepository,
+                transactionRepository,
+                kafkaProducer
+        );
     }
 
     CreateTransactionUsecase.Input makeInput(Account from, Account to, BigDecimal amount) {
@@ -67,8 +82,10 @@ class CreateTransactionUsecaseTest {
         final var accountTo = makeAccount(makeClient());
         final var amount = BigDecimal.valueOf(200.0);
         final var input = makeInput(accountFrom, accountTo, amount);
+        final var transaction = makeTransaction(accountFrom, accountTo, amount);
         mockSuccessGetAccount(accountFrom);
         mockSuccessGetAccount(accountTo);
+        mockSuccessSaveTransaction(transaction);
         accountFrom.credit(BigDecimal.valueOf(300.0));
 
         usecase.execute(input);
@@ -118,10 +135,10 @@ class CreateTransactionUsecaseTest {
     }
 
     @Test
-    void shouldCallTransactionRepository() throws Exceptions {
+    void shouldCallTransactionRepositoryAndAccountRepositoryToAdjustBalances() throws Exceptions {
         final var usecase = makeSut();
-        final var accountFrom = makeAccount(makeClient());
-        final var accountTo = makeAccount(makeClient());
+        final var accountFrom = spy(makeAccount(makeClient()));
+        final var accountTo = spy(makeAccount(makeClient()));
         final var amount = BigDecimal.valueOf(200.0);
         final var input = makeInput(accountFrom, accountTo, amount);
         accountFrom.credit(BigDecimal.valueOf(300.0));
@@ -131,6 +148,10 @@ class CreateTransactionUsecaseTest {
         usecase.execute(input);
 
         verify(transactionRepository, times(1)).save(any());
+        verify(accountFrom, times(1)).debit(input.amount());
+        verify(accountTo, times(1)).credit(input.amount());
+        verify(accountRepository, times(1)).updateBalance(accountFrom);
+        verify(accountRepository, times(1)).updateBalance(accountTo);
     }
 
     @Test
