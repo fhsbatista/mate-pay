@@ -4,9 +4,9 @@ import com.matepay.wallet_core.Exceptions;
 import com.matepay.wallet_core.domain.entities.Account;
 import com.matepay.wallet_core.domain.entities.Transaction;
 import com.matepay.wallet_core.domain.repositories.AccountRepository;
-import com.matepay.wallet_core.domain.repositories.ClientRepository;
 import com.matepay.wallet_core.domain.repositories.TransactionRepository;
 import com.matepay.wallet_core.infra.kafka.KafkaProducer;
+import com.matepay.wallet_core.messaging.events.BalanceUpdated;
 import com.matepay.wallet_core.messaging.events.TransactionCreated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,13 +52,16 @@ public class CreateTransactionUsecase {
         from.debit(input.amount);
         to.credit(input.amount);
 
-        accountRepository.updateBalance(from);
-        accountRepository.updateBalance(to);
+        Account updatedAccountFrom = accountRepository.updateBalance(from);
+        Account updatedAccountTo = accountRepository.updateBalance(to);
 
         final Transaction persistedTransaction = transactionRepository.save(new Transaction(from, to, input.amount));
-        final TransactionCreated event = new TransactionCreated(persistedTransaction);
+        final TransactionCreated transactionCreatedEvent = new TransactionCreated(persistedTransaction);
+        final BalanceUpdated balanceUpdatedEvent = new BalanceUpdated(updatedAccountFrom, updatedAccountTo);
 
-        kafkaProducer.publish("transactions", event);
+
+        kafkaProducer.publish("transactions", transactionCreatedEvent);
+        kafkaProducer.publish("balances", balanceUpdatedEvent);
 
         return persistedTransaction;
     }

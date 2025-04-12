@@ -71,6 +71,10 @@ class CreateTransactionUsecaseTest {
         when(accountRepository.get(account.getUuid())).thenThrow(new Exceptions.AccountNotFound());
     }
 
+    void mockSuccessUpdateBalance(Account account) throws Exceptions {
+        when(accountRepository.updateBalance(account)).thenReturn(account);
+    }
+
     void mockSuccessSaveTransaction(Transaction transaction) throws Exceptions {
         when(transactionRepository.save(any())).thenReturn(transaction);
     }
@@ -86,6 +90,8 @@ class CreateTransactionUsecaseTest {
         mockSuccessGetAccount(accountFrom);
         mockSuccessGetAccount(accountTo);
         mockSuccessSaveTransaction(transaction);
+        mockSuccessUpdateBalance(accountFrom);
+        mockSuccessUpdateBalance(accountTo);
         accountFrom.credit(BigDecimal.valueOf(300.0));
 
         usecase.execute(input);
@@ -144,6 +150,9 @@ class CreateTransactionUsecaseTest {
         accountFrom.credit(BigDecimal.valueOf(300.0));
         mockSuccessGetAccount(accountFrom);
         mockSuccessGetAccount(accountTo);
+        mockSuccessUpdateBalance(accountFrom);
+        mockSuccessUpdateBalance(accountTo);
+
 
         usecase.execute(input);
 
@@ -165,6 +174,8 @@ class CreateTransactionUsecaseTest {
         final var transaction = makeTransaction(accountFrom, accountTo, amount);
         mockSuccessGetAccount(accountFrom);
         mockSuccessGetAccount(accountTo);
+        mockSuccessUpdateBalance(accountFrom);
+        mockSuccessUpdateBalance(accountTo);
         mockSuccessSaveTransaction(transaction);
 
         final var result = usecase.execute(input);
