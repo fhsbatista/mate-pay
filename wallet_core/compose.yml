@@ -1,7 +1,7 @@
 services:
-  db:
+  wallet_core_db:
     image: mysql:8.0
-    container_name: db
+    container_name: wallet_core_db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: wallet_core_db
@@ -72,7 +72,7 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - db
+      - wallet_core_db
 
 volumes:
   mysql_db:
