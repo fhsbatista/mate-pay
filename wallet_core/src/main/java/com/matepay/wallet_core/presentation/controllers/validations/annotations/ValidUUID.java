@@ -1,8 +1,8 @@
 package com.matepay.wallet_core.presentation.controllers.validations.annotations;
 
-import com.matepay.events.Payload;
 import com.matepay.wallet_core.presentation.controllers.validations.validators.UUIDValidator;
 import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

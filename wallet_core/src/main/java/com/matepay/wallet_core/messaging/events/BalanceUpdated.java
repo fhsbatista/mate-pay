@@ -1,9 +1,7 @@
 package com.matepay.wallet_core.messaging.events;
 
-import com.matepay.events.Event;
-import com.matepay.events.Payload;
 import com.matepay.wallet_core.domain.entities.Account;
-import com.matepay.wallet_core.domain.entities.Transaction;
+import com.matepay.wallet_core.messaging.Event;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -17,7 +15,7 @@ public class BalanceUpdated implements Event {
             UUID accountIdTo,
             BigDecimal balanceAccountFrom,
             BigDecimal balanceAccountTo
-    ) implements com.matepay.events.Payload {
+    ) implements com.matepay.wallet_core.messaging.Payload {
     }
 
     private static String NAME = "BalanceUpdated";
