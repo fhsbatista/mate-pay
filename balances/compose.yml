@@ -9,6 +9,19 @@ services:
       - "3306:3306"
     volumes:
       - mysql_db:/var/lib/mysql
+    networks:
+      - matepay-network
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:   
+      - matepay-network
 
 volumes:
   mysql_db:
+
+networks:
+  matepay-network:
+    external: true
