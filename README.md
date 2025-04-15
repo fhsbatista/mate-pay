@@ -2,6 +2,20 @@
 
 Welcome to the MatePay repository. The application is composed of several microservices responsible for managing transactions, balances, statements, and integrations with payment gateways.
 
+## Quick Start
+
+To run all services:
+```bash
+make up
+```
+
+### Checking Balances
+To check account balances, use the `http/get-balance.http` file. This file contains HTTP request examples for checking balances.
+
+### Service Ports
+- Wallet Core: http://localhost:8080
+- Balances Service: http://localhost:3003
+
 ## Overview of the Architecture
 
 ![](out/docs/containers/containers.svg)
