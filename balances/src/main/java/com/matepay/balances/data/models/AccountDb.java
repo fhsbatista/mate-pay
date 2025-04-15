@@ -50,4 +50,9 @@ public class AccountDb {
                 updatedAt
         );
     }
+
+    public void updateBalance(BigDecimal balance) {
+        this.balance = balance;
+        this.updatedAt = Instant.now();
+    }
 }
