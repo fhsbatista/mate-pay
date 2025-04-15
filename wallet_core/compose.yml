@@ -5,75 +5,26 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: wallet_core_db
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_db:/var/lib/mysql
-
-  kafka:
-    image: confluentinc/cp-server:7.9.0
-    container_name: kakfa
-    ports:
-      - "9092:9092"
-      - "9101:9101"
-    environment:
-      KAFKA_NODE_ID: 1
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_JMX_PORT: 9101
-      KAFKA_JMX_HOSTNAME: localhost
-      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
-      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka:29092
-      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-      KAFKA_PROCESS_ROLES: 'broker,controller'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
-      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
-      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
-      CONFLUENT_METRICS_ENABLE: 'true'
-      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
-      # Replace CLUSTER_ID with a unique base64 UUID using "bin/kafka-storage.sh random-uuid"
-      # See https://docs.confluent.io/kafka/operations-tools/kafka-tools.html#kafka-storage-sh
-      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
-    healthcheck:
-      test: kafka-topics --bootstrap-server kafka:9092 --list
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  redpandadata:
-    image: docker.redpanda.com/redpandadata/console:v2.8.5
-    entrypoint: /bin/sh
-    command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
-    environment:
-      CONFIG_FILEPATH: /tmp/config.yml
-      CONSOLE_CONFIG_FILE: |
-        kafka:
-          brokers: ["kafka:29092"]
-        server:
-          listenPort: 8081
-    ports:
-      - 8081:8081
-    depends_on:
-      kafka:
-        condition: service_healthy
+    networks:
+      - matepay-network
 
   server:
+    container_name: wallet-core-app
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     ports:
       - 8080:8080
     depends_on:
       - wallet_core_db
+    networks:
+      - matepay-network
+
+networks:
+  matepay-network:
+    external: true
 
 volumes:
   mysql_db:
-  kafka_data:

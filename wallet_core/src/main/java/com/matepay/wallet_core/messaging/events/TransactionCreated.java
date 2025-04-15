@@ -1,7 +1,8 @@
 package com.matepay.wallet_core.messaging.events;
 
-import com.matepay.events.Event;
 import com.matepay.wallet_core.domain.entities.Transaction;
+import com.matepay.wallet_core.messaging.Event;
+import com.matepay.wallet_core.messaging.Payload;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ public class TransactionCreated implements Event {
             UUID accountFromId,
             UUID accountToId,
             Instant createdAt,
-            BigDecimal amount) implements com.matepay.events.Payload {
+            BigDecimal amount) implements com.matepay.wallet_core.messaging.Payload {
     }
 
     private static final String NAME = "TransactionCreated";
