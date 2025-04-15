@@ -11,6 +11,7 @@ services:
       - matepay-network
 
   server:
+    container_name: app
     build:
       context: .
       dockerfile: Dockerfile

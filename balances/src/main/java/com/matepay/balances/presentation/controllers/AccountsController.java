@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/accounts")
+@RequestMapping("balances")
 @Validated
 public class AccountsController {
     @Autowired

@@ -13,9 +13,12 @@ services:
       - matepay-network
 
   server:
+    container_name: app
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "3003:8080"
     networks:   
       - matepay-network
 
