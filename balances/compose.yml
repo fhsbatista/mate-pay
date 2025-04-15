@@ -1,7 +1,7 @@
 services:
   balances_db:
     image: mysql:8.0
-    container_name: balances_db
+    container_name: balances-db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: balances_db
@@ -13,7 +13,7 @@ services:
       - matepay-network
 
   server:
-    container_name: app
+    container_name: balances-app
     build:
       context: .
       dockerfile: Dockerfile

@@ -1,0 +1,7 @@
+### Get balance for John Doe's account
+GET http://localhost:3003/balances/33333333-3333-3333-3333-333333333333
+Accept: application/json
+
+### Get balance for Jane Smith's account
+GET http://localhost:3003/balances/44444444-4444-4444-4444-444444444444
+Accept: application/json

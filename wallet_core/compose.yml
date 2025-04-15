@@ -11,7 +11,7 @@ services:
       - matepay-network
 
   server:
-    container_name: app
+    container_name: wallet-core-app
     build:
       context: .
       dockerfile: Dockerfile
