@@ -1,8 +1,8 @@
 package com.matepay.balances.presentation.validations.annotations;
 
-import com.matepay.events.Payload;
 import com.matepay.balances.presentation.validations.validators.UUIDValidator;
 import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

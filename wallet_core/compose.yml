@@ -5,8 +5,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: wallet_core_db
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_db:/var/lib/mysql
 
@@ -67,7 +65,7 @@ services:
 
   server:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     ports:
       - 8080:8080
